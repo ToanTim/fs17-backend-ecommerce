@@ -60,5 +60,14 @@ namespace Ecommerce.Core.src.Common
         {
             return new AppException(statusCode, message);
         }
+
+        //****custom authntication exception group****
+
+        // Unauthorized Access with specific message
+        public static AppException InvalidCredential(string message = "Invalid credentials: email or password is incorrect")
+        {
+            return new AppException(HttpStatusCode.Unauthorized, message);
+        }
+
     }
 }

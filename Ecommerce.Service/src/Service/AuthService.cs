@@ -29,13 +29,12 @@ namespace Ecommerce.Service.src.Service
             var user = await _userRepo.GetUserByCredentialAsync(credential);
             if (user == null)
             {
-                throw new UnauthorizedAccessException("Invalid credentials.");
+                throw AppException.InvalidCredential();
             }
 
             SetCurrentUser(user);
 
             var accessToken = _tokenService.GenerateToken(user, TokenType.AccessToken);
-            //var refreshToken=_tokenService.GenerateToken(user,TokenType.RefreshToken);
 
             return accessToken;
         }
