@@ -26,11 +26,28 @@ builder.Services.AddDbContext<EcommerceDbContext>(options =>
 });
 
 // service registration -> automatically create all instances of dependencies
+// user service registration
 builder.Services.AddScoped<IUserRepository, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ExceptionHandlerMiddleware>();
+
+// product service registration
+//builder.Services.AddScoped<IProductRepository, ProductRepo>();
+
+//category service registration
+//builder.Services.AddScoped<ICategoryRepository, CategoryRepo>();
+
+//register ExceptionHandlerMiddleware
+builder.Services.AddScoped<ExceptionHandlerMiddleware>(serviceProvider =>
+{
+    var logger = serviceProvider.GetRequiredService<ILogger<ExceptionHandlerMiddleware>>();
+    return new ExceptionHandlerMiddleware(next =>
+    {
+        var requestDelegate = serviceProvider.GetRequiredService<RequestDelegate>();
+        return Task.CompletedTask;
+    }, logger);
+});
 
 // Add authentication instructions
 builder
