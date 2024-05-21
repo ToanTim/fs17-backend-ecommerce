@@ -102,5 +102,40 @@ namespace Ecommerce.Tests.src.Service
             Assert.False(_authService.HasPermission(UserRole.Admin));
             Assert.True(_authService.HasPermission(UserRole.User));
         }
+
+        [Fact]
+        public async Task Login_WithInvalidCredentials_ShouldThrowAppException()
+        {
+            // Arrange
+            var invalidUserCredential = new UserCredential("invalid@mail.com", "wrongpassword");
+
+            // Set up the mock repository to return null for invalid credentials
+            _mockUserRepo.Setup(repo => repo.GetUserByCredentialAsync(invalidUserCredential))
+                .ReturnsAsync((User)null);
+
+            // Act and Assert
+            await Assert.ThrowsAsync<AppException>(() => _authService.LoginAsync(invalidUserCredential));
+        }
+
+        [Fact]
+        public async Task Login_WithValidCredentials_ShouldReturnAccessToken()
+        {
+            // Arrange
+            var validUserCredential = new UserCredential("user@mail.com", "secure");
+
+            // Set up the mock repository to return a valid user for valid credentials
+            _mockUserRepo.Setup(repo => repo.GetUserByCredentialAsync(validUserCredential))
+                .ReturnsAsync(testUser);
+
+            // Set up the mock token service to return a token
+            _mockTokenService.Setup(service => service.GenerateToken(testUser, TokenType.AccessToken))
+                .Returns("ValidAccessToken");
+
+            // Act
+            var result = await _authService.LoginAsync(validUserCredential);
+
+            // Assert
+            Assert.Equal("ValidAccessToken", result);
+        }
     }
 }
