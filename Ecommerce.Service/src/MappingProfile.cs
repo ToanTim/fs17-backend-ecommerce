@@ -1,5 +1,6 @@
 using AutoMapper;
 using Ecommerce.Core.src.Entity;
+using Ecommerce.Core.src.ValueObject;
 using Ecommerce.Service.src.DTO;
 public class MappingProfile : Profile
 {
@@ -9,6 +10,8 @@ public class MappingProfile : Profile
         CreateMap<User, UserReadDto>();
         CreateMap<UserCreateDto, User>();
         CreateMap<UserUpdateDto, User>();
+        CreateMap<User, UserWithRoleDto>()
+            .ForMember(dest => dest.RoleText, opt => opt.MapFrom(src => GetRoleText(src.Role)));
 
         // Product mappings
         CreateMap<Product, ProductReadDto>();
@@ -33,5 +36,19 @@ public class MappingProfile : Profile
         CreateMap<Category, CategoryReadDto>();
         CreateMap<CategoryCreateDto, Category>();
         CreateMap<CategoryUpdateDto, Category>();
+    }
+
+    private string GetRoleText(UserRole role)
+    {
+        switch (role)
+        {
+            case UserRole.Admin:
+                return "admin";
+            case UserRole.User:
+                return "user";
+            // Add more cases as needed
+            default:
+                return "Unknown";
+        }
     }
 }

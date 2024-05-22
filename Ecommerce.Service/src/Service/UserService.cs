@@ -20,7 +20,7 @@ namespace Ecommerce.Service.src.Service
             _mapper = mapper;
         }
 
-        public async Task<UserReadDto> CreateUserAsync(UserCreateDto userDto)
+        public async Task<UserWithRoleDto> CreateUserAsync(UserCreateDto userDto)
         {
             // Optional: validate the user DTO if you have a validation method
             // UserValidation.ValidateUserCreateDto(userDto);
@@ -42,7 +42,7 @@ namespace Ecommerce.Service.src.Service
             var createdUser = await _userRepo.CreateUserAsync(user);
 
             // Map the created User entity to UserReadDto and return it
-            return _mapper.Map<UserReadDto>(createdUser);
+            return _mapper.Map<UserWithRoleDto>(createdUser);
         }
 
 
