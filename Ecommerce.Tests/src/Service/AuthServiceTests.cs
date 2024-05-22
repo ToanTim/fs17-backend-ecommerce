@@ -137,5 +137,33 @@ namespace Ecommerce.Tests.src.Service
             // Assert
             Assert.Equal("ValidAccessToken", result);
         }
+
+
+
+        [Fact]
+        public async Task LoginAsync_WithValidCredentials_ShouldReturnAccessToken()
+        {
+            // Arrange
+            var userCredential = new UserCredential("john@example.com", "password1");
+            var testUser = new User("john", "doe", UserRole.User, "avatarlink", "john@example.com", "password1");
+            var expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG5AZXhhbXBsZS5jb20iLCJuYW1laWQiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDEiLCJyb2xlIjoiVXNlciIsIm5iZiI6MTcxNjMzNjM3MSwiZXhwIjoxNzE2NTA5MTcxLCJpYXQiOjE3MTYzMzYzNzEsImlzcyI6IkVjb21tZXJjZVdlYlNpdGUifQ.6rAlxpviq8svP1WJeyCH6GMa2LsEomjfucpxaJzHy1o";
+
+            // Mock the user repository to return a valid user for valid credentials
+            _mockUserRepo.Setup(repo => repo.GetUserByCredentialAsync(userCredential))
+                .ReturnsAsync(testUser);
+
+            // Mock the token service to return a token for the valid user
+            _mockTokenService.Setup(service => service.GenerateToken(testUser, TokenType.AccessToken))
+                .Returns(expectedToken);
+
+            // Act
+            var accessToken = await _authService.LoginAsync(userCredential);
+
+            // Assert
+            Assert.Equal(expectedToken, accessToken);
+        }
+
+        //TODO: Add test to verify the JSOn response of access token in LoginAsync
+        // Expected response: { "access_token": "token" }
     }
 }
