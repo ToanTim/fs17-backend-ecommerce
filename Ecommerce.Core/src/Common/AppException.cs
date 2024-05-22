@@ -74,6 +74,11 @@ namespace Ecommerce.Core.src.Common
         {
             return new AppException(HttpStatusCode.NotFound, message);
         }
+        public static AppException UserCredentialErrorEmailAlreadyExist(string email)
+        {
+            string message = $"A user with the email {email} already exists.";
+            return new AppException(HttpStatusCode.NotFound, message);
+        }
 
     }
 }

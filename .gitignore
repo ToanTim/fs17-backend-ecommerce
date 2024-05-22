@@ -100,3 +100,9 @@ frontend/package-*.json
 .DS_Store
 .AppleDouble
 .LSOverride
+
+
+#Ignore WebApi appsetting.json and appsetting.Development.json file where store credential of psql local database
+Ecommerce.WebApi/appsettings.json
+Ecommerce.WebApi/appsettings.Development.json
+Ecommerce.WebApi/Migrations

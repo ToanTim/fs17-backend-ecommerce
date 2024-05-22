@@ -22,21 +22,29 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<UserReadDto> CreateUserAsync(UserCreateDto userDto)
         {
-            UserValidation.ValidateUserCreateDto(userDto);
+            // Optional: validate the user DTO if you have a validation method
+            // UserValidation.ValidateUserCreateDto(userDto);
 
+            // Map the UserCreateDto to a User entity
             var user = _mapper.Map<User>(userDto);
+            // Ensure CreatedAt is set to UTC
+            user.CreatedAt = DateTimeOffset.UtcNow;
 
+            // Check if a user with the given email already exists
             var isUserExistWithEmail = await _userRepo.UserExistsByEmailAsync(user.Email);
 
             if (isUserExistWithEmail)
             {
-                throw new ArgumentException($"A user with the email {user.Email} already exists.");
+                throw AppException.UserCredentialErrorEmailAlreadyExist(user.Email);
             }
 
+            // Create the user asynchronously
             var createdUser = await _userRepo.CreateUserAsync(user);
 
+            // Map the created User entity to UserReadDto and return it
             return _mapper.Map<UserReadDto>(createdUser);
         }
+
 
         public async Task<bool> DeleteUserByIdAsync(Guid id)
         {

@@ -4,6 +4,7 @@ using Ecommerce.Core.src.Common;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstraction;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace WebDemo.Controller.src.Controller
 {
@@ -16,6 +17,7 @@ namespace WebDemo.Controller.src.Controller
         public UserController(IUserService userService)
         {
             _userService = userService;
+
         }
 
         [Authorize(Roles = "Admin")]// authentication middleware would be invoked if user send get request to this endpoint
@@ -50,6 +52,15 @@ namespace WebDemo.Controller.src.Controller
 
             // Return the user's profile
             return Ok(userProfile);
+        }
+
+        // Endpoint to create a new user
+        [AllowAnonymous] // Allow access to everyone
+        [HttpPost("")]// http://localhost:5233/api/v1/users
+        public async Task<ActionResult<UserReadDto>> CreateUser([FromBody] UserCreateDto userDto)
+        {
+            var createdUser = await _userService.CreateUserAsync(userDto);
+            return Ok(createdUser);
         }
     }
 }
