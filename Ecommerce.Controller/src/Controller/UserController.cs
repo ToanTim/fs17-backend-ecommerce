@@ -18,37 +18,38 @@ namespace WebDemo.Controller.src.Controller
             _userService = userService;
         }
 
-        [Authorize(Roles ="Admin")]// authentication middleware would be invoked if user send get request to this endpoint
+        [Authorize(Roles = "Admin")]// authentication middleware would be invoked if user send get request to this endpoint
         [HttpGet("")] // define endpoint: /users?page=1&pageSize=10
         public async Task<IEnumerable<UserReadDto>> GetAllUsersAsync([FromQuery] QueryOptions options)
         {
-            try
-            {
-                return await _userService.GetAllUsersAsync(options);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return await _userService.GetAllUsersAsync(options);
         }
-        
+
         // only admin can get user profile by id
-        [Authorize(Roles ="Admin")]
-        [HttpGet("{id}")] // define endpoint: /users/{id}
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{id}")] // http://localhost:5233/api/v1/users/{id} headers: Authorization: Bearer {token}
         public async Task<UserReadDto> GetUserByIdAsync([FromRoute] Guid id)
         {
             return await _userService.GetUserByIdAsync(id);
         }
 
         // user needs to be logged in to check her own profile
+
         [Authorize]
-        [HttpGet("profile")]
-        public async Task<UserReadDto> GetUserProfileAsync()
+        [HttpGet("user_profile")]//http://localhost:5233/api/v1/users/user_profile Headers: Authorization: Bearer {token}
+        public async Task<ActionResult<UserReadDto>> GetUserProfileAsync()
         {
-            var claims = HttpContext.User; // not user obbject, but user claims
+            // Retrieve the user's claims from the HttpContext
+            var claims = HttpContext.User;
+
+            // Extract the user ID from the claims
             var userId = Guid.Parse(claims.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            return await _userService.GetUserByIdAsync(userId);
+            // Get the user's profile using the user ID
+            var userProfile = await _userService.GetUserByIdAsync(userId);
+
+            // Return the user's profile
+            return Ok(userProfile);
         }
     }
 }

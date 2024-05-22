@@ -2,6 +2,7 @@ using AutoMapper;
 using Ecommerce.Core.src.Common;
 using Ecommerce.Core.src.Entity;
 using Ecommerce.Core.src.RepoAbstraction;
+using Ecommerce.Core.src.ValueObject;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstraction;
 using Ecommerce.Service.src.Validation;
@@ -26,8 +27,8 @@ namespace Ecommerce.Service.src.Service
             var user = _mapper.Map<User>(userDto);
 
             var isUserExistWithEmail = await _userRepo.UserExistsByEmailAsync(user.Email);
-            
-            if (isUserExistWithEmail )
+
+            if (isUserExistWithEmail)
             {
                 throw new ArgumentException($"A user with the email {user.Email} already exists.");
             }
@@ -40,7 +41,7 @@ namespace Ecommerce.Service.src.Service
         public async Task<bool> DeleteUserByIdAsync(Guid id)
         {
             var existingUser = await _userRepo.GetUserByIdAsync(id);
-           
+
             if (existingUser == null)
             {
                 throw new KeyNotFoundException($"User with ID {id} not found.");
@@ -58,13 +59,7 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<UserReadDto> GetUserByIdAsync(Guid id)
         {
-            var user = await _userRepo.GetUserByIdAsync(id);
-
-            if (user == null)
-            {
-                throw new KeyNotFoundException($"User with ID {id} not found.");
-            }
-
+            var user = await _userRepo.GetUserByIdAsync(id) ?? throw AppException.UserNotFound($"User with ID {id} not found.");
             return _mapper.Map<UserReadDto>(user);
         }
 
@@ -74,7 +69,7 @@ namespace Ecommerce.Service.src.Service
 
             if (existingUser == null)
             {
-                throw new KeyNotFoundException($"User with ID {id} not found.");
+                throw AppException.UserNotFound($"User with ID {id} not found.");
             }
 
             UserValidation.ValidateUserUpdateDto(userDto);

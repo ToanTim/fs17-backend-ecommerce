@@ -69,5 +69,11 @@ namespace Ecommerce.Core.src.Common
             return new AppException(HttpStatusCode.Unauthorized, message);
         }
 
+        //****custom user service exception group****
+        public static AppException UserNotFound(string message = "User not found")
+        {
+            return new AppException(HttpStatusCode.NotFound, message);
+        }
+
     }
 }
