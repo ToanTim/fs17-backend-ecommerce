@@ -36,7 +36,6 @@ namespace WebDemo.Controller.src.Controller
         }
 
         // user needs to be logged in to check her own profile
-
         [Authorize]
         [HttpGet("user_profile")]//http://localhost:5233/api/v1/users/user_profile Headers: Authorization: Bearer {token}
         public async Task<ActionResult<UserReadDto>> GetUserProfileAsync()
@@ -61,6 +60,28 @@ namespace WebDemo.Controller.src.Controller
         {
             var createdUser = await _userService.CreateUserAsync(userDto);
             return Ok(createdUser);
+        }
+
+        [HttpDelete("{id}")] // http://localhost:5233/api/v1/users/{id} headers: Authorization: Bearer {token}
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUserAsync(Guid id)
+        {
+            await _userService.DeleteUserByIdAsync(id);
+            return NoContent();
+        }
+
+        [HttpDelete("delete_me")]//http://localhost:5233/api/v1/users/delete_me Headers: Authorization: Bearer {token}
+        [Authorize]
+        public async Task<IActionResult> DeleteCurrentUserAsync()
+        {
+            // Retrieve the user's ID from the claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return BadRequest("User ID claim not found.");
+
+            var userId = Guid.Parse(userIdClaim.Value);
+            await _userService.DeleteUserByIdAsync(userId);
+            return NoContent();
         }
     }
 }

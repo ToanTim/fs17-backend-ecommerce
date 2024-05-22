@@ -22,9 +22,6 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<UserWithRoleDto> CreateUserAsync(UserCreateDto userDto)
         {
-            // Optional: validate the user DTO if you have a validation method
-            // UserValidation.ValidateUserCreateDto(userDto);
-
             // Map the UserCreateDto to a User entity
             var user = _mapper.Map<User>(userDto);
             // Ensure CreatedAt is set to UTC
