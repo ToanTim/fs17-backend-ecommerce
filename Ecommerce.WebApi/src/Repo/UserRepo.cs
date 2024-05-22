@@ -50,7 +50,7 @@ namespace Ecommerce.WebApi.src.Repo
             return await _users.SingleAsync(p => p.Id == id);
         }
 
-        public async Task<bool> UpdateUserByIdAsync(User user)
+        public async Task<User> UpdateUserByIdAsync(User user)
         {
             await _users
                 .Where(u => u.Id == user.Id)
@@ -63,7 +63,7 @@ namespace Ecommerce.WebApi.src.Repo
                         .SetProperty(u => u.LastName, user.LastName)
                 );
             await _context.SaveChangesAsync();
-            return true;
+            return await _users.SingleAsync(p => p.Id == user.Id); ;
         }
 
         public async Task<bool> UserExistsByEmailAsync(string email)

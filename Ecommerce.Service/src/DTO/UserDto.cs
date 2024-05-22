@@ -55,9 +55,21 @@ namespace Ecommerce.Service.src.DTO
 
     public class UserUpdateDto
     {
-        public string? FirstName { get; }
-        public string? LastName { get; }
-        public string? Avatar { get; }
-        public string? Password { get; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        public string FirstName { get; set; }
+
+        [Required]
+        public string LastName { get; set; }
+
+        [Required]
+        public string Avatar { get; set; }
+
+        [Required]
+        [MinLength(6)]
+        public string Password { get; set; }
     }
 }

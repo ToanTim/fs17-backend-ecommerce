@@ -45,13 +45,7 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<bool> DeleteUserByIdAsync(Guid id)
         {
-            var existingUser = await _userRepo.GetUserByIdAsync(id);
-
-            if (existingUser == null)
-            {
-                throw new KeyNotFoundException($"User with ID {id} not found.");
-            }
-
+            _ = await _userRepo.GetUserByIdAsync(id) ?? throw AppException.UserNotFound($"User with ID {id} not found.");
             return await _userRepo.DeleteUserByIdAsync(id);
         }
 
@@ -68,20 +62,44 @@ namespace Ecommerce.Service.src.Service
             return _mapper.Map<UserReadDto>(user);
         }
 
-        public async Task<bool> UpdateUserByIdAsync(Guid id, UserUpdateDto userDto)
+        public async Task<UserWithRoleDto> UpdateUserByIdAsync(Guid id, UserUpdateDto userDto)
         {
-            var existingUser = await _userRepo.GetUserByIdAsync(id);
+            _ = await _userRepo.GetUserByIdAsync(id) ?? throw AppException.UserNotFound($"User with ID {id} not found.");
 
-            if (existingUser == null)
+            var user = await _userRepo.GetUserByIdAsync(id);
+
+            // Update user properties based on DTO
+            if (!string.IsNullOrEmpty(userDto.Email))
             {
-                throw AppException.UserNotFound($"User with ID {id} not found.");
+                user.Email = userDto.Email;
             }
 
-            UserValidation.ValidateUserUpdateDto(userDto);
+            if (!string.IsNullOrEmpty(userDto.Avatar))
+            {
+                user.Avatar = userDto.Avatar;
+            }
 
-            _mapper.Map(userDto, existingUser);
+            if (!string.IsNullOrEmpty(userDto.FirstName))
+            {
+                user.FirstName = userDto.FirstName;
+            }
 
-            return await _userRepo.UpdateUserByIdAsync(existingUser);
+            if (!string.IsNullOrEmpty(userDto.LastName))
+            {
+                user.LastName = userDto.LastName;
+            }
+
+            if (!string.IsNullOrEmpty(userDto.Password))
+            {
+                user.Password = userDto.Password;
+            }
+
+            // Save changes to repository
+            await _userRepo.UpdateUserByIdAsync(user);
+
+            // Map the updated user to UserReadDto
+
+            return _mapper.Map<UserWithRoleDto>(user);
         }
     }
 }

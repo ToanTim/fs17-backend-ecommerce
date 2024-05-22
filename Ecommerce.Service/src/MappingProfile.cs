@@ -12,6 +12,8 @@ public class MappingProfile : Profile
         CreateMap<UserUpdateDto, User>();
         CreateMap<User, UserWithRoleDto>()
             .ForMember(dest => dest.RoleText, opt => opt.MapFrom(src => GetRoleText(src.Role)));
+        /* CreateMap<UserUpdateDto, UserWithRoleDto>()
+        .ForMember(dest => dest.RoleText, opt => opt.MapFrom(src => GetRoleText(src.Role))); */
 
         // Product mappings
         CreateMap<Product, ProductReadDto>();

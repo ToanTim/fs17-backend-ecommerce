@@ -75,13 +75,29 @@ namespace WebDemo.Controller.src.Controller
         public async Task<IActionResult> DeleteCurrentUserAsync()
         {
             // Retrieve the user's ID from the claims
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return BadRequest("User ID claim not found.");
-
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? throw AppException.UserNotFound();
             var userId = Guid.Parse(userIdClaim.Value);
             await _userService.DeleteUserByIdAsync(userId);
             return NoContent();
+        }
+
+        [HttpPut("{id}")] // http://localhost:5233/api/v1/users/{id} headers: Authorization: Bearer {token}
+        [Authorize]
+        public async Task<ActionResult<UserWithRoleDto>> UpdateUserAsync(Guid id, [FromBody] UserUpdateDto userUpdateDto)
+        {
+            // Retrieve the user's ID from the claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? throw AppException.UserNotFound();
+
+            var userId = Guid.Parse(userIdClaim.Value);
+
+            // Check if the user is updating their own account
+            if (userId != id)
+                throw AppException.Forbidden("You are not authorized to update this user.");
+
+            // Update the user
+            return await _userService.UpdateUserByIdAsync(id, userUpdateDto);
+
+            /* return NoContent(); */
         }
     }
 }
