@@ -28,18 +28,14 @@ namespace Ecommerce.Service.src.Service
 
         public async Task<ProductReadDto> CreateProductAsync(ProductCreateDto product)
         {
-            /* var categoryFound = await _categoryRepository.GetCategoryByIdAsync(product.CategoryId);
-            if (categoryFound == null)
-            {
-                throw new ArgumentException($"Category with id {product.CategoryId} not found.");
-            }
+            var categoryFound = await _categoryRepository.GetCategoryByIdAsync(product.CategoryId) ?? throw AppException.CategoryNotFound(product.CategoryId);
             if (product.Price < 0)
             {
-                throw new ArgumentException("Price must be greater than 0.");
+                throw AppException.ProductPriceLessThan0();
             }
             if (product.Inventory < 0)
             {
-                throw new ArgumentException("Inventory must be greater than 0");
+                throw AppException.ProductInventoryLessThan0();
             }
             var productCreate = new Product(
                 product.Name,
@@ -53,23 +49,9 @@ namespace Ecommerce.Service.src.Service
             {
                 productCreate.Images.Add(new Image(productCreate.Id, image));
             }
-            var newProduct = await _productRepository.CreateProductAsync(productCreate);
+            var newProduct = await _productRepository.CreateProductAsync(productCreate) ?? throw AppException.CreateProductFail();
 
-            if (newProduct == null)
-            {
-                throw new ArgumentException("create new product failed.");
-            }
-
-            return new ProductReadDto(
-                newProduct.Id,
-                newProduct.Name,
-                newProduct.Description,
-                newProduct.Price,
-                categoryFound,
-                newProduct.Inventory,
-                newProduct.Images
-            ); */
-            throw new NotImplementedException();
+            return _mapper.Map<ProductReadDto>(newProduct);
         }
 
         public Task<bool> DeleteProductByIdAsync(Guid id)

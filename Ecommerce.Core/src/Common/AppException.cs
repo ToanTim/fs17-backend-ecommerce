@@ -80,5 +80,28 @@ namespace Ecommerce.Core.src.Common
             return new AppException(HttpStatusCode.NotFound, message);
         }
 
+        //****custom product service exception group****
+        public static AppException CategoryNotFound(Guid id)
+        {
+            string message = $"A category with the ID {id} not found.";
+            return new AppException(HttpStatusCode.NotFound, message);
+        }
+
+        public static AppException ProductPriceLessThan0()
+        {
+            return new AppException(HttpStatusCode.BadRequest, "Price must be greater than 0.");
+        }
+
+        public static AppException ProductInventoryLessThan0()
+        {
+            return new AppException(HttpStatusCode.BadRequest, "Inventory must be greater than 0");
+        }
+
+        public static AppException CreateProductFail()
+        {
+            return new AppException(HttpStatusCode.BadRequest, "create new product failed.");
+        }
+
+
     }
 }

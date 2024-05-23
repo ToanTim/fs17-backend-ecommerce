@@ -15,7 +15,12 @@ namespace Ecommerce.Core.src.Entity
 
         public BaseEntity()
         {
-            CreatedAt = DateTimeOffset.Now;
+            CreatedAt = DateTimeOffset.UtcNow; // Ensure this is in UTC
+        }
+
+        public void SetUpdatedAt()
+        {
+            UpdatedAt = DateTimeOffset.UtcNow; // Ensure this is in UTC
         }
     }
 }
