@@ -16,6 +16,7 @@ namespace Ecommerce.Core.src.Entity
             Price = price;
             Inventory = inventory;
             Category = category;
+            Images = [];
         }
 
         // Parameterless constructor for Entity Framework Core

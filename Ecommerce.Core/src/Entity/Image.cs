@@ -1,4 +1,5 @@
-using System.ComponentModel.DataAnnotations;
+
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ecommerce.Core.src.Entity
@@ -6,16 +7,20 @@ namespace Ecommerce.Core.src.Entity
     [Table("images")]
     public class Image : BaseEntity
     {
-        public Guid EntityId { get; set; }
-
+        public Guid? ProductId { get; set; }
         public string Url { get; set; }
+
+        // Navigation property to represent the product associated with the image
+        [ForeignKey("ProductId")]
+        public Product Product { get; set; }
 
         // Add a parameterless constructor for Entity Framework
         public Image() { }
 
-        public Image(Guid entityId, string url)
+        // Constructor with parameters
+        public Image(Guid? productId, string url)
         {
-            EntityId = entityId;
+            ProductId = productId;
             Url = url;
         }
     }

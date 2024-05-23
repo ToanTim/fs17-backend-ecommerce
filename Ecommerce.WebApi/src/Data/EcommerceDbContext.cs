@@ -15,6 +15,11 @@ namespace Ecommerce.WebApi.src.Data
         public DbSet<Review> Reviews { get; set; }
 
         public DbSet<User>? Users { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Image> Images { get; set; }
+
+
 
         private readonly ILoggerFactory _loggerFactory;
 
@@ -133,18 +138,10 @@ namespace Ecommerce.WebApi.src.Data
                 entity.ToTable("images");
                 entity.HasKey(e => e.Id);
 
-                // Define the foreign key relationship with the products table
-                entity.Property(e => e.EntityId)
-                    .IsRequired();
-
-                entity.Property(e => e.Url)
-                    .IsRequired();
-
-                entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("NOW()");
-
-                entity.Property(e => e.UpdatedAt)
-                    .HasDefaultValueSql("NOW()");
+                entity.HasOne(e => e.Product)
+                    .WithMany(product => product.Images)  // Specify the navigation property on the Product entity
+                    .HasForeignKey(e => e.ProductId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             // Add dummy data

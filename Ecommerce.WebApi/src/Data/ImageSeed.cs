@@ -23,7 +23,7 @@ namespace Ecommerce.WebApi.src.Data
                 return new Image
                 {
                     Id = Guid.Parse(fields[0]),
-                    EntityId = Guid.Parse(fields[1]),
+                    ProductId = Guid.Parse(fields[1]),
                     Url = fields[2]
                 };
             });

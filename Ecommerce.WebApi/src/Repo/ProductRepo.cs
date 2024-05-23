@@ -2,6 +2,8 @@ using Ecommerce.Core.src.Common;
 using Ecommerce.Core.src.Entity;
 using Ecommerce.Core.src.RepoAbstraction;
 using Ecommerce.Core.src.ValueObject;
+using Ecommerce.Service.src;
+using Ecommerce.Service.src.DTO;
 using Ecommerce.WebApi.src.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +38,7 @@ namespace Ecommerce.WebApi.src.Repo
             return true;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync(QueryOptions? options)
+        public async Task<IEnumerable<Product>> GetAllProductsAsyncWithFilter(QueryOptions? options)
         {
             var searchKey = options?.SearchKey ?? "";
             var skipFrom = (options?.StartingAfter == null ? options?.StartingAfter : 0) + 1;
@@ -65,6 +67,15 @@ namespace Ecommerce.WebApi.src.Repo
 
             return products;
         }
+
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        {
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .ToListAsync();
+        }
+
 
         public async Task<Product>? GetProductByIdAsync(Guid id)
         {

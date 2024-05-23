@@ -2,13 +2,14 @@ using Ecommerce.Core.src.Common;
 using Ecommerce.Service.src.DTO;
 using Ecommerce.Service.src.ServiceAbstraction;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controller.src.Controller
 {
     [ApiController]
     [Route("api/v1/products")]
-    public class ProductController
+    public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
 
@@ -18,7 +19,7 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost()]
+        [HttpPost()] // http://localhost:5233/api/v1/products Headers: Authorization: Bearer {token}
         // should be admin and superadmin only
         public async Task<ProductReadDto> CreateProductAsync(ProductCreateDto productCreate)
         {
@@ -26,26 +27,25 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut]
+        [HttpPut] // http://localhost:5233/api/v1/products Headers: Authorization: Bearer {token}
         public async Task<bool> UpdateProductAsync(Guid id, ProductUpdateDto productUpdate)
         {
             return await _productService.UpdateProductByIdAsync(id, productUpdate);
         }
 
         [AllowAnonymous]
-        [HttpGet("id")]
+        [HttpGet("id")] // http://localhost:5233/api/v1/products/{id}
         public async Task<ProductReadDto> GetProductByIdAsync(Guid id)
         {
             return await _productService.GetProductByIdAsync(id);
         }
 
         [AllowAnonymous]
-        [HttpGet()]
-        public async Task<IEnumerable<ProductReadDto>> GetAllProductAsync(
-            [FromQuery] QueryOptions queryOptions
-        )
+        [HttpGet("")]
+        public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetAllProductsAsync([FromQuery] QueryOptions options)
         {
-            return await _productService.GetAllProductsAsync(queryOptions);
+            var products = await _productService.GetAllProductsAsync();
+            return Ok(products);
         }
 
         [AllowAnonymous]

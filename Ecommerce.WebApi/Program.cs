@@ -1,5 +1,6 @@
 using System.Text;
 using Ecommerce.Core.src.RepoAbstraction;
+using Ecommerce.Core.src.RepositoryAbstraction;
 using Ecommerce.Service.src.Service;
 using Ecommerce.Service.src.ServiceAbstraction;
 using Ecommerce.WebApi.src.Data;
@@ -20,6 +21,7 @@ builder.Services.AddSwaggerGen();
 //Add all controllers
 builder.Services.AddControllers();
 
+
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("PgDbConnection"));
@@ -33,10 +35,12 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // product service registration
-//builder.Services.AddScoped<IProductRepository, ProductRepo>();
+builder.Services.AddScoped<IProductRepository, ProductRepo>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 //category service registration
-//builder.Services.AddScoped<ICategoryRepository, CategoryRepo>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepo>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 //register ExceptionHandlerMiddleware
 builder.Services.AddScoped<ExceptionHandlerMiddleware>(serviceProvider =>

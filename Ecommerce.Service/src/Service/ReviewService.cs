@@ -34,11 +34,11 @@ namespace Ecommerce.Service.src.Service
 
             var review = _mapper.Map<Review>(reviewDto); // Use AutoMapper to map from DTO to Entity
 
-            foreach (var imageUrl in reviewDto.Images)
+            /* foreach (var imageUrl in reviewDto.Images)
             {
                 review.Images.Add(new Image(review.Id, imageUrl));
             }
-
+ */
             await _reviewRepository.CreateReviewAsync(review);
             return review;
         }

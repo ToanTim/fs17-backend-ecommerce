@@ -74,14 +74,14 @@ namespace Ecommerce.WebApi.src.Repo
 
         public async Task<bool> UpdateReviewByIdAsync(Review review)
         {
-             await _reviews
-                .Where(r => r.Id == review.Id)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(r => r.IsAnonymous, review.IsAnonymous)
-                    .SetProperty(r => r.Content, review.Content)
-                    .SetProperty(r => r.Rating, review.Rating)
-                    .SetProperty(r => r.Images, review.Images)
-                );
+            await _reviews
+               .Where(r => r.Id == review.Id)
+               .ExecuteUpdateAsync(setters => setters
+                   .SetProperty(r => r.IsAnonymous, review.IsAnonymous)
+                   .SetProperty(r => r.Content, review.Content)
+                   .SetProperty(r => r.Rating, review.Rating)
+               /* .SetProperty(r => r.Images, review.Images) */
+               );
 
             return true;
         }

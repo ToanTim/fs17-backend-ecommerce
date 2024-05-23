@@ -8,7 +8,7 @@ namespace Ecommerce.Service.src.ServiceAbstraction
         Task<ProductReadDto> CreateProductAsync(ProductCreateDto product);
         Task<bool> UpdateProductByIdAsync(Guid id, ProductUpdateDto product);
         Task<ProductReadDto> GetProductByIdAsync(Guid id);
-        Task<IEnumerable<ProductReadDto>> GetAllProductsAsync(QueryOptions? options);
+        Task<IEnumerable<ProductReadDto>> GetAllProductsAsync();
         Task<bool> DeleteProductByIdAsync(Guid id);
     }
 }

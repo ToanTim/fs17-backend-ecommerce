@@ -1,3 +1,4 @@
+using AutoMapper;
 using Ecommerce.Core.src.Common;
 using Ecommerce.Core.src.Entity;
 using Ecommerce.Core.src.RepoAbstraction;
@@ -12,18 +13,22 @@ namespace Ecommerce.Service.src.Service
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
 
+        private readonly IMapper _mapper;
+
         public ProductService(
             IProductRepository productRepository,
-            ICategoryRepository categoryRepository
+            ICategoryRepository categoryRepository,
+            IMapper mapper
         )
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
 
         public async Task<ProductReadDto> CreateProductAsync(ProductCreateDto product)
         {
-            var categoryFound = await _categoryRepository.GetCategoryByIdAsync(product.CategoryId);
+            /* var categoryFound = await _categoryRepository.GetCategoryByIdAsync(product.CategoryId);
             if (categoryFound == null)
             {
                 throw new ArgumentException($"Category with id {product.CategoryId} not found.");
@@ -63,7 +68,8 @@ namespace Ecommerce.Service.src.Service
                 categoryFound,
                 newProduct.Inventory,
                 newProduct.Images
-            );
+            ); */
+            throw new NotImplementedException();
         }
 
         public async Task<bool> DeleteProductByIdAsync(Guid id)
@@ -76,9 +82,10 @@ namespace Ecommerce.Service.src.Service
             return await _productRepository.DeleteProductByIdAsync(id);
         }
 
-        public Task<IEnumerable<ProductReadDto>> GetAllProductsAsync(QueryOptions options)
+        public async Task<IEnumerable<ProductReadDto>> GetAllProductsAsync()
         {
-            throw new NotImplementedException();
+            var products = await _productRepository.GetAllProductsAsync();
+            return _mapper.Map<IEnumerable<ProductReadDto>>(products);
         }
 
         public Task<ProductReadDto> GetProductByIdAsync(Guid id)

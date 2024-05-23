@@ -96,8 +96,6 @@ namespace WebDemo.Controller.src.Controller
 
             // Update the user
             return await _userService.UpdateUserByIdAsync(id, userUpdateDto);
-
-            /* return NoContent(); */
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Ecommerce.Core.src.Entity;
 
 namespace Ecommerce.Service.src.DTO
@@ -38,25 +39,32 @@ namespace Ecommerce.Service.src.DTO
         public int? Inventory { get; set; }
         public List<string>? Images { get; set; }
 
-        public ProductUpdateDto(string? name,string? description,decimal? price,Guid? categoryId,int? inventory,List<string>? images){
-                if(name !=null){
-                    Name=name;
-                }
-                if(description !=null){
-                    Description=description;
-                }
-                if(price != null){
-                    Price=price;
-                }
-                if(categoryId != null){
-                    CategoryId=categoryId;
-                }
-                if(inventory != null){
-                    Inventory=inventory;
-                }
-                if(images != null){
-                    Images=images;
-                }
+        public ProductUpdateDto(string? name, string? description, decimal? price, Guid? categoryId, int? inventory, List<string>? images)
+        {
+            if (name != null)
+            {
+                Name = name;
+            }
+            if (description != null)
+            {
+                Description = description;
+            }
+            if (price != null)
+            {
+                Price = price;
+            }
+            if (categoryId != null)
+            {
+                CategoryId = categoryId;
+            }
+            if (inventory != null)
+            {
+                Inventory = inventory;
+            }
+            if (images != null)
+            {
+                Images = images;
+            }
         }
     }
 
@@ -67,18 +75,18 @@ namespace Ecommerce.Service.src.DTO
         public string Name { get; }
         public string Description { get; }
         public decimal Price { get; }
-        public Category Category { get; }
+        public CategoryReadDto Category { get; }
         public int Inventory { get; }
-        public List<Image> Images { get; }
+        public List<ImageReadDto> Images { get; }
 
         public ProductReadDto(
             Guid id,
             string name,
             string description,
             decimal price,
-            Category category,
+            CategoryReadDto category,
             int inventory,
-            List<Image> images
+            List<ImageReadDto> images
         )
         {
             Id = id;
