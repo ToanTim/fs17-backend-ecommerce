@@ -22,7 +22,7 @@ namespace WebDemo.Controller.src.Controller
 
         [Authorize(Roles = "Admin")]// authentication middleware would be invoked if user send get request to this endpoint
         [HttpGet("")] // define endpoint: /users?page=1&pageSize=10
-        public async Task<IEnumerable<UserReadDto>> GetAllUsersAsync([FromQuery] QueryOptions options)
+        public async Task<IEnumerable<UserWithRoleDto>> GetAllUsersAsync([FromQuery] QueryOptions options)
         {
             return await _userService.GetAllUsersAsync(options);
         }
@@ -30,7 +30,7 @@ namespace WebDemo.Controller.src.Controller
         // only admin can get user profile by id
         [Authorize(Roles = "Admin")]
         [HttpGet("{id}")] // http://localhost:5233/api/v1/users/{id} headers: Authorization: Bearer {token}
-        public async Task<UserReadDto> GetUserByIdAsync([FromRoute] Guid id)
+        public async Task<UserWithRoleDto> GetUserByIdAsync([FromRoute] Guid id)
         {
             return await _userService.GetUserByIdAsync(id);
         }
@@ -38,7 +38,7 @@ namespace WebDemo.Controller.src.Controller
         // user needs to be logged in to check her own profile
         [Authorize]
         [HttpGet("user_profile")]//http://localhost:5233/api/v1/users/user_profile Headers: Authorization: Bearer {token}
-        public async Task<ActionResult<UserReadDto>> GetUserProfileAsync()
+        public async Task<ActionResult<UserWithRoleDto>> GetUserProfileAsync()
         {
             // Retrieve the user's claims from the HttpContext
             var claims = HttpContext.User;
@@ -56,7 +56,7 @@ namespace WebDemo.Controller.src.Controller
         // Endpoint to create a new user
         [AllowAnonymous] // Allow access to everyone
         [HttpPost("")]// http://localhost:5233/api/v1/users
-        public async Task<ActionResult<UserReadDto>> CreateUser([FromBody] UserCreateDto userDto)
+        public async Task<ActionResult<UserWithRoleDto>> CreateUser([FromBody] UserCreateDto userDto)
         {
             var createdUser = await _userService.CreateUserAsync(userDto);
             return Ok(createdUser);

@@ -49,17 +49,17 @@ namespace Ecommerce.Service.src.Service
             return await _userRepo.DeleteUserByIdAsync(id);
         }
 
-        public async Task<IEnumerable<UserReadDto>> GetAllUsersAsync(QueryOptions options)
+        public async Task<IEnumerable<UserWithRoleDto>> GetAllUsersAsync(QueryOptions options)
         {
             var users = await _userRepo.GetAllUsersAsync(options);
 
-            return _mapper.Map<IEnumerable<UserReadDto>>(users);
+            return _mapper.Map<IEnumerable<UserWithRoleDto>>(users);
         }
 
-        public async Task<UserReadDto> GetUserByIdAsync(Guid id)
+        public async Task<UserWithRoleDto> GetUserByIdAsync(Guid id)
         {
             var user = await _userRepo.GetUserByIdAsync(id) ?? throw AppException.UserNotFound($"User with ID {id} not found.");
-            return _mapper.Map<UserReadDto>(user);
+            return _mapper.Map<UserWithRoleDto>(user);
         }
 
         public async Task<UserWithRoleDto> UpdateUserByIdAsync(Guid id, UserUpdateDto userDto)

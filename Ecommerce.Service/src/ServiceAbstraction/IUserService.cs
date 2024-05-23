@@ -7,8 +7,8 @@ namespace Ecommerce.Service.src.ServiceAbstraction
     {
         Task<UserWithRoleDto> CreateUserAsync(UserCreateDto user);
         Task<UserWithRoleDto> UpdateUserByIdAsync(Guid id, UserUpdateDto user);
-        Task<UserReadDto> GetUserByIdAsync(Guid id);
-        Task<IEnumerable<UserReadDto>> GetAllUsersAsync(QueryOptions options);
+        Task<UserWithRoleDto> GetUserByIdAsync(Guid id);
+        Task<IEnumerable<UserWithRoleDto>> GetAllUsersAsync(QueryOptions options);
         Task<bool> DeleteUserByIdAsync(Guid id);
     }
 }
