@@ -72,14 +72,9 @@ namespace Ecommerce.Service.src.Service
             throw new NotImplementedException();
         }
 
-        public async Task<bool> DeleteProductByIdAsync(Guid id)
+        public Task<bool> DeleteProductByIdAsync(Guid id)
         {
-            var producFound = await _productRepository.GetProductByIdAsync(id);
-            if (producFound == null)
-            {
-                throw new ArgumentException("Product not found");
-            }
-            return await _productRepository.DeleteProductByIdAsync(id);
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<ProductReadDto>> GetAllProductsAsync()
@@ -88,9 +83,10 @@ namespace Ecommerce.Service.src.Service
             return _mapper.Map<IEnumerable<ProductReadDto>>(products);
         }
 
-        public Task<ProductReadDto> GetProductByIdAsync(Guid id)
+        public async Task<ProductReadDto> GetProductByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var product = await _productRepository.GetProductByIdAsync(id) ?? throw AppException.NotFound($"Product with ID {id} not found.");
+            return _mapper.Map<ProductReadDto>(product);
         }
 
         public async Task<bool> UpdateProductByIdAsync(Guid id, ProductUpdateDto product)

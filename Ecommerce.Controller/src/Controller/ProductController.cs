@@ -20,7 +20,6 @@ namespace Ecommerce.Controller.src.Controller
 
         [Authorize(Roles = "Admin")]
         [HttpPost()] // http://localhost:5233/api/v1/products Headers: Authorization: Bearer {token}
-        // should be admin and superadmin only
         public async Task<ProductReadDto> CreateProductAsync(ProductCreateDto productCreate)
         {
             return await _productService.CreateProductAsync(productCreate);
@@ -30,18 +29,20 @@ namespace Ecommerce.Controller.src.Controller
         [HttpPut] // http://localhost:5233/api/v1/products Headers: Authorization: Bearer {token}
         public async Task<bool> UpdateProductAsync(Guid id, ProductUpdateDto productUpdate)
         {
-            return await _productService.UpdateProductByIdAsync(id, productUpdate);
+            // return await _productService.UpdateProductByIdAsync(id, productUpdate);
+            throw new NotImplementedException();
         }
 
         [AllowAnonymous]
-        [HttpGet("id")] // http://localhost:5233/api/v1/products/{id}
-        public async Task<ProductReadDto> GetProductByIdAsync(Guid id)
+        [HttpGet("{id}")] // http://localhost:5233/api/v1/products/{id}
+        public async Task<ActionResult<ProductReadDto>> GetProductByIdAsync(Guid id)
         {
-            return await _productService.GetProductByIdAsync(id);
+            var product = await _productService.GetProductByIdAsync(id);
+            return Ok(product);
         }
 
         [AllowAnonymous]
-        [HttpGet("")]
+        [HttpGet("")] // http://localhost:5233/api/v1/products
         public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetAllProductsAsync([FromQuery] QueryOptions options)
         {
             var products = await _productService.GetAllProductsAsync();

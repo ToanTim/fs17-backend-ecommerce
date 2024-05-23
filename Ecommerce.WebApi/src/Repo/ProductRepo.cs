@@ -70,16 +70,17 @@ namespace Ecommerce.WebApi.src.Repo
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return await _context.Products
+            return await _products
                 .Include(p => p.Category)
                 .Include(p => p.Images)
                 .ToListAsync();
         }
 
 
-        public async Task<Product>? GetProductByIdAsync(Guid id)
+        public async Task<Product?> GetProductByIdAsync(Guid id)
         {
-            var product = await _products.SingleAsync(p => p.Id == id);
+            var product = await _context.Products.Include(p => p.Category)
+                .Include(p => p.Images).SingleOrDefaultAsync(p => p.Id == id);
             return product;
         }
 
