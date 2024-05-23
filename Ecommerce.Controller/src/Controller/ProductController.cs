@@ -34,7 +34,7 @@ namespace Ecommerce.Controller.src.Controller
 
         [AllowAnonymous]
         [HttpGet("{id}")] // http://localhost:5233/api/v1/products/{id}
-        public async Task<ActionResult<ProductReadDto>> GetProductByIdAsync(Guid id)
+        public async Task<ActionResult<ProductReadDto>> GetProductByIdAsync([FromRoute] Guid id)
         {
             var product = await _productService.GetProductByIdAsync(id);
             return Ok(product);
@@ -48,8 +48,8 @@ namespace Ecommerce.Controller.src.Controller
             return Ok(products);
         }
 
-        [AllowAnonymous]
-        [HttpDelete("id")]
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")] // http://localhost:5233/api/v1/products/{id}
         public async Task<bool> DeleteProductByIdAsync([FromRoute] Guid id)
         {
             return await _productService.DeleteProductByIdAsync(id);

@@ -54,9 +54,10 @@ namespace Ecommerce.Service.src.Service
             return _mapper.Map<ProductReadDto>(newProduct);
         }
 
-        public Task<bool> DeleteProductByIdAsync(Guid id)
+        public async Task<bool> DeleteProductByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            _ = await _productRepository.GetProductByIdAsync(id) ?? throw AppException.ProductNotFound(id);
+            return await _productRepository.DeleteProductByIdAsync(id);
         }
 
         public async Task<IEnumerable<ProductReadDto>> GetAllProductsAsync()

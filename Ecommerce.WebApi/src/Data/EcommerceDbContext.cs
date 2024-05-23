@@ -141,7 +141,7 @@ namespace Ecommerce.WebApi.src.Data
                 entity.HasOne(e => e.Product)
                     .WithMany(product => product.Images)  // Specify the navigation property on the Product entity
                     .HasForeignKey(e => e.ProductId)
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Add dummy data
