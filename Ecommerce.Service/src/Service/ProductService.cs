@@ -71,7 +71,7 @@ namespace Ecommerce.Service.src.Service
             return _mapper.Map<ProductReadDto>(product);
         }
 
-        public async Task<bool> UpdateProductByIdAsync(Guid id, ProductUpdateDto product)
+        public async Task<ProductReadDto> UpdateProductByIdAsync(Guid id, ProductUpdateDto product)
         {
             var productFound = await _productRepository.GetProductByIdAsync(id);
             if (productFound == null)
@@ -83,7 +83,7 @@ namespace Ecommerce.Service.src.Service
             {
                 if (product.Price < 0)
                 {
-                    throw new ArgumentException("Price must be greater than 0.");
+                    throw AppException.ProductNotFound(productFound.Id);
                 }
                 productFound.Price = (decimal)product.Price;
             }
@@ -91,7 +91,7 @@ namespace Ecommerce.Service.src.Service
             {
                 if (product.Inventory < 0)
                 {
-                    throw new ArgumentException("Inventory must be greater than 0");
+                    throw AppException.ProductInventoryLessThan0();
                 }
 
                 productFound.Inventory = (int)product.Inventory;
@@ -101,7 +101,7 @@ namespace Ecommerce.Service.src.Service
                 var categoryFound = await _categoryRepository.GetCategoryByIdAsync((Guid)product.CategoryId);
                 if (categoryFound == null)
                 {
-                    throw new ArgumentException("category not found");
+                    throw AppException.CategoryNotFound(product.CategoryId);
                 }
                 productFound.Category = categoryFound;
             }
@@ -116,9 +116,12 @@ namespace Ecommerce.Service.src.Service
             if (product.Images != null)
             {
                 productFound.Images.Clear();
-                productFound.Images.AddRange(product.Images.Select(url => new Image(productFound.Id, url)));
+
+                productFound.Images.AddRange(product.Images.Select(url => new Image { Url = url }));
             }
-            return await _productRepository.UpdateProductAsync(productFound);
+
+            await _productRepository.UpdateProductAsync(productFound);
+            return _mapper.Map<ProductReadDto>(productFound);
         }
     }
 }

@@ -13,11 +13,13 @@ namespace Ecommerce.WebApi.src.Repo
     {
         private readonly EcommerceDbContext _context;
         private readonly DbSet<Product> _products;
+        private readonly DbSet<Image> _image;
 
         public ProductRepo(EcommerceDbContext context)
         {
             _context = context;
             _products = _context.Products;
+            _image = _context.Images;
         }
 
         /* EF core work flow
@@ -84,21 +86,17 @@ namespace Ecommerce.WebApi.src.Repo
             return product;
         }
 
-        public async Task<bool> UpdateProductAsync(Product product)
+        public async Task<Product> UpdateProductAsync(Product productUpdate)
         {
-            var productFound = await _products
-                .Where(p => p.Id == product.Id)
-                .ExecuteUpdateAsync(setters =>
-                    setters
-                        .SetProperty(p => p.Category, product.Category)
-                        .SetProperty(p => p.Description, product.Description)
-                        .SetProperty(p => p.Images, product.Images)
-                        .SetProperty(p => p.Inventory, product.Inventory)
-                        .SetProperty(p => p.Name, product.Name)
-                        .SetProperty(p => p.Price, product.Price)
-                );
+
+            productUpdate.UpdatedAt = DateTimeOffset.UtcNow;
+            //delete all image that have product_id as null in database
+            var imagesToDelete = await _image.Where(i => i.ProductId == null).ToListAsync();
+            _image.RemoveRange(imagesToDelete);
+
             await _context.SaveChangesAsync();
-            return true;
+            return await _products.SingleAsync(p => p.Id == productUpdate.Id);
         }
+
     }
 }

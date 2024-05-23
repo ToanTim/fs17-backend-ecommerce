@@ -26,11 +26,10 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut] // http://localhost:5233/api/v1/products Headers: Authorization: Bearer {token}
-        public async Task<bool> UpdateProductAsync(Guid id, ProductUpdateDto productUpdate)
+        [HttpPut("{id}")] // http://localhost:5233/api/v1/products Headers: Authorization: Bearer {token}
+        public async Task<ProductReadDto> UpdateProductAsync(Guid id, ProductUpdateDto productUpdate)
         {
-            // return await _productService.UpdateProductByIdAsync(id, productUpdate);
-            throw new NotImplementedException();
+            return await _productService.UpdateProductByIdAsync(id, productUpdate);
         }
 
         [AllowAnonymous]

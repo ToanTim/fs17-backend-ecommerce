@@ -81,7 +81,7 @@ namespace Ecommerce.Core.src.Common
         }
 
         //****custom product service exception group****
-        public static AppException CategoryNotFound(Guid id)
+        public static AppException CategoryNotFound(Guid? id)
         {
             string message = $"A category with the ID {id} not found.";
             return new AppException(HttpStatusCode.NotFound, message);
@@ -99,9 +99,14 @@ namespace Ecommerce.Core.src.Common
 
         public static AppException CreateProductFail()
         {
-            return new AppException(HttpStatusCode.BadRequest, "create new product failed.");
+            return new AppException(HttpStatusCode.InternalServerError, "create new product failed.");
         }
 
+        public static AppException ProductNotFound(Guid id)
+        {
+            string message = $"A product with the ID {id} not found.";
+            return new AppException(HttpStatusCode.NotFound, message);
+        }
 
     }
 }

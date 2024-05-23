@@ -63,7 +63,7 @@ namespace Ecommerce.WebApi.src.Repo
                         .SetProperty(u => u.LastName, user.LastName)
                 );
             await _context.SaveChangesAsync();
-            return await _users.SingleAsync(p => p.Id == user.Id); ;
+            return await _users.SingleAsync(p => p.Id == user.Id);
         }
 
         public async Task<bool> UserExistsByEmailAsync(string email)
