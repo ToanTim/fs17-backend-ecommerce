@@ -108,5 +108,12 @@ namespace Ecommerce.Core.src.Common
             return new AppException(HttpStatusCode.NotFound, message);
         }
 
+        //****custom category exception group****
+
+        public static AppException CategoryAlreadyExixst(string name)
+        {
+            string message = $"A category with the name {name} already exists.";
+            return new AppException(HttpStatusCode.BadRequest, message);
+        }
     }
 }

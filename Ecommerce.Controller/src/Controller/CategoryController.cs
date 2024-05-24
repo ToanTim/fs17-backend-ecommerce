@@ -17,25 +17,18 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost()]
+        [HttpPost()] // POST /api/v1/categories authentication header with bearer token
         public async Task<ActionResult<Category>> CreateCategoryAsync(
             CategoryCreateDto categoryCreate
         )
         {
-            try
-            {
-                var category = await _categoryService.CreateCategoryAsync(categoryCreate);
-                return Ok(category);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var category = await _categoryService.CreateCategoryAsync(categoryCreate);
+            return Ok(category);
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("id")]
-        public async Task<bool> UpdateCategory(
+        [HttpPut("{id}")]// PUT /api/v1/categories/{id} authentication header with bearer token
+        public async Task<CategoryReadDto> UpdateCategory(
             [FromRoute] Guid id,
             CategoryUpdateDto categoryUpdate
         )
@@ -44,50 +37,29 @@ namespace Ecommerce.Controller.src.Controller
         }
 
         [AllowAnonymous]
-        [HttpGet("id")]
+        [HttpGet("{id}")] // GET /api/v1/categories/{id}
         public async Task<ActionResult<CategoryReadDto>> RetrieveCategoryByIdAsync(
             [FromRoute] Guid id
         )
         {
-            try
-            {
-                var category = await _categoryService.GetCategoryByIdAsync(id);
-                return Ok(category);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            return Ok(category);
         }
 
         [AllowAnonymous]
-        [HttpGet()]
+        [HttpGet()] // GET /api/v1/categories
         public async Task<ActionResult<IEnumerable<CategoryReadDto>>> ListAllCategories()
         {
-            try
-            {
-                var categories = await _categoryService.GetAllCategoriesAsync();
-                return Ok(categories);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return Ok(categories);
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("id")]
+        [HttpDelete("{id}")] // DELETE /api/v1/categories/{id} authentication header with bearer token
         public async Task<ActionResult<bool>> DeleteCategory([FromRoute] Guid id)
         {
-            try
-            {
-                await _categoryService.DeleteCategoryAsync(id);
-                return Ok(true);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            await _categoryService.DeleteCategoryAsync(id);
+            return Ok(true);
         }
     }
 }

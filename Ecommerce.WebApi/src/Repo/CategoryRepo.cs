@@ -45,7 +45,7 @@ namespace Ecommerce.WebApi.src.Repo
             return category;
         }
 
-        public async Task<bool> UpdateCategoryAsync(Guid id, Category category)
+        public async Task<Category> UpdateCategoryAsync(Guid id, Category category)
         {
             await _categories
                 .Where(c => c.Id == id)
@@ -55,16 +55,12 @@ namespace Ecommerce.WebApi.src.Repo
                 );
 
             await _context.SaveChangesAsync();
-            return true;
+            return await _categories.SingleAsync(p => p.Id == category.Id);
         }
 
         public async Task<Category> FindByNameAsync(string name)
-        { 
-            var category= await _categories.SingleOrDefaultAsync(c => c.Name == name);
-             if (category == null)
-            {
-                throw new KeyNotFoundException($"Category with name {name} not found.");
-            }
+        {
+            var category = await _categories.SingleOrDefaultAsync(c => c.Name == name);
             return category;
         }
     }
